@@ -7,7 +7,7 @@ import SignIn from "./pages/SignIn";
 import Dashbord from "./pages/Dashbord";
 import Projects from "./pages/Projects";
 import SignUp from "./pages/SignUp";
-import Header from "./pages/Header";
+import Header from "./components/Header";
 const App = () => {
   return (
     <BrowserRouter>
