@@ -1,13 +1,27 @@
-import "./App.css";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import React from "react";
 
-function App() {
+import Home from "./pages/Home";
+import About from "./pages/About";
+import SignIn from "./pages/SignIn";
+import Dashbord from "./pages/Dashbord";
+import Projects from "./pages/Projects";
+import SignUp from "./pages/SignUp";
+import Header from "./pages/Header";
+const App = () => {
   return (
-    <>
-      <p className=" bg-slate-600">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <BrowserRouter>
+      <Header />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/sign-in" element={<SignIn />} />
+        <Route path="/sign-up" element={<SignUp />} />
+        <Route path="/dashboard" element={<Dashbord />} />
+        <Route path="/projects" element={<Projects />} />
+      </Routes>
+    </BrowserRouter>
   );
-}
+};
 
 export default App;
