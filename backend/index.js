@@ -8,7 +8,7 @@ const MONGODB_URI = process.env.MONGODB_URI;
 mongoose
   .connect(MONGODB_URI)
   .then(() => {
-    console.log("mongodb is connected");
+    console.log("mongodb is connected ");
   })
   .catch((error) => {
     console.log(error, " we got server error");
