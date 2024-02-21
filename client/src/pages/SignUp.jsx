@@ -1,73 +1,118 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { Button, Checkbox, Label, TextInput } from "flowbite-react";
+import React, { useState } from "react";
+import { TextInput, Button, Label, Alert, Spinner } from "flowbite-react";
+import { Link, useNavigate } from "react-router-dom";
 
-const SignUp = () => {
+export default function SignUp() {
+  const [formData, setFormData] = useState({});
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.username || !formData.email || !formData.password) {
+      return setErrorMessage("Please fill out all fields.");
+    }
+
+    try {
+      setLoading(true);
+      setErrorMessage(null);
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+
+      if (data.success === false) {
+        setErrorMessage(data.message + " !!");
+      }
+      setLoading(false);
+      if (res.ok) {
+        navigate("/sign-in");
+      }
+    } catch (error) {
+      console.error("SignUp error:", error.message);
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="flex flex-col  mx-20 my-20 lg:mx-24 lg:my-24 md:flex-row justify-center items-center">
-      <div className="w-full md:w-1/3">
-        <div className="flex flex-col justify-center items-center">
-          <div className="self-center whitespace-nowrap  px-4 pb-4  lg:px-6   lg:pb-6 text-sm sm:text-xl font-semibold dark:text-white">
-            <span className="px-2 py-1 text-2xl  lg:text-5xl  bg-gradient-to-r from-teal-500 via-indigo-500 to-pink-500 rounded-lg text-white">
-              InBlog
+    <div className="min-h-screen mt-20">
+      <div className="flex p-3 max-w-3xl mx-auto flex-col md:flex-row md:items-center gap-5">
+        <div className="flex-1">
+          <Link to="/" className="font-bold dark:text-white text-4xl">
+            <span className="px-2 py-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg text-white">
+              Sahand's Blog
             </span>
-            Blog
-          </div>
-          <h6 className="text-sm  lg:text-lg">
+          </Link>
+          <p className="text-sm mt-5">
             This is a demo project. You can sign up with your email and password
             or with Google.
-          </h6>
+          </p>
         </div>
-      </div>
-      <div className="w-full md:w-2/3 md:ml-8">
-        <div className="max-w-md mx-auto">
-          <div>
-            <div className="mb-2 block">
-              <Label htmlFor="username" value="Username" />
+        <div className="flex-1">
+          <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+            <div>
+              <Label htmlFor="username">Your username</Label>
+              <TextInput
+                type="text"
+                placeholder="Username"
+                id="username"
+                onChange={handleChange}
+              />
             </div>
-            <TextInput
-              id="username"
-              type="text"
-              placeholder="Enter your username"
-              required
-            />
-          </div>
-          <div>
-            <div className="mb-2 block">
-              <Label htmlFor="email" value="Your email" />
+            <div>
+              <Label htmlFor="email">Your email</Label>
+              <TextInput
+                type="email"
+                placeholder="name@company.com"
+                id="email"
+                onChange={handleChange}
+              />
             </div>
-            <TextInput
-              id="email"
-              type="email"
-              placeholder="name@flowbite.com"
-              required
-            />
-          </div>
-          <div>
-            <div className="mb-2 block">
-              <Label htmlFor="password" value="Your password" />
+            <div>
+              <Label htmlFor="password">Your password</Label>
+              <TextInput
+                type="password"
+                placeholder="Password"
+                id="password"
+                onChange={handleChange}
+              />
             </div>
-            <TextInput id="password" type="password" required />
-          </div>
-          <div className="flex items-center gap-2 px-2 py-2">
-            <Checkbox id="remember" />
-            <Label htmlFor="remember">Remember me</Label>
-          </div>
-          <Button type="submit">Submit</Button>
-          <div className="mt-4">
-            <Button gradientDuoTone="greenToBlue" outline>
-              SignUp with Google
+            <Button
+              gradientDuoTone="purpleToPink"
+              type="submit"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <Spinner size="sm" />
+                  <span className="pl-3">Loading...</span>
+                </>
+              ) : (
+                "Sign Up"
+              )}
             </Button>
+          </form>
+          <div className="flex gap-2 text-sm mt-5">
+            <span>Have an account?</span>
+            <Link to="/sign-in" className="text-blue-500">
+              Sign In
+            </Link>
           </div>
-          <div className="mt-2">
-            <p>
-              Already have an account? <Link to="/sign-in">Sign in</Link>
-            </p>
-          </div>
+
+          {errorMessage && (
+            <Alert className="mt-4" color="failure">
+              {errorMessage}
+            </Alert>
+          )}
         </div>
       </div>
     </div>
   );
-};
-
-export default SignUp;
+}
