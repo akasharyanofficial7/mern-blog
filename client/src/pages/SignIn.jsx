@@ -1,34 +1,36 @@
-import React, { useState } from "react";
-
-import { TextInput, Button, Label, Alert, Spinner } from "flowbite-react";
+import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   signInStart,
-  signInSccess,
-  signInFaliure,
+  signInSuccess,
+  signInFailure,
 } from "../redux/user/userSlice";
+import OAuth from "../components/OAuth";
 
 export default function SignIn() {
-  const dispatch = useDispatch();
   const [formData, setFormData] = useState({});
 
-  const { loading, error: errorMessage } = useSelector((state) => state.user);
-
+  const { error: errorMessage } = useSelector((state) => state.user);
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (!formData.email || !formData.password) {
-      dispatch(signInFaliure("Please fill out all fields."));
+      return dispatch(signInFailure("Please fill all the fields"));
     }
 
     try {
       dispatch(signInStart());
+      setLoading(true);
       const res = await fetch("/api/auth/signin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -37,35 +39,41 @@ export default function SignIn() {
       const data = await res.json();
 
       if (data.success === false) {
-        dispatch(signInFaliure(error.message));
+        dispatch(signInFailure(data.message));
       }
+      setLoading(false);
       if (res.ok) {
-        dispatch(signInSccess(data));
+        dispatch(signInSuccess(data));
         navigate("/");
       }
     } catch (error) {
-      dispatch(signInFaliure(error.message));
+      setLoading(false);
+      dispatch(signInFailure(error.message));
     }
   };
 
   return (
     <div className="min-h-screen mt-20">
       <div className="flex p-3 max-w-3xl mx-auto flex-col md:flex-row md:items-center gap-5">
+        {/* left */}
         <div className="flex-1">
           <Link to="/" className="font-bold dark:text-white text-4xl">
             <span className="px-2 py-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-lg text-white">
-              Sahand's Blog
+              Sahand's
             </span>
+            Blog
           </Link>
           <p className="text-sm mt-5">
-            This is a demo project. You can sign up with your email and password
+            This is a demo project. You can sign in with your email and password
             or with Google.
           </p>
         </div>
+        {/* right */}
+
         <div className="flex-1">
           <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
             <div>
-              <Label htmlFor="email">Your email</Label>
+              <Label value="Your email" />
               <TextInput
                 type="email"
                 placeholder="name@company.com"
@@ -74,10 +82,10 @@ export default function SignIn() {
               />
             </div>
             <div>
-              <Label htmlFor="password">Your password</Label>
+              <Label value="Your password" />
               <TextInput
                 type="password"
-                placeholder="************"
+                placeholder="**********"
                 id="password"
                 onChange={handleChange}
               />
@@ -96,16 +104,16 @@ export default function SignIn() {
                 "Sign In"
               )}
             </Button>
+            <OAuth />
           </form>
           <div className="flex gap-2 text-sm mt-5">
-            <span>Don't have an account?</span>
+            <span>Dont Have an account?</span>
             <Link to="/sign-up" className="text-blue-500">
-              Sign up
+              Sign Up
             </Link>
           </div>
-
           {errorMessage && (
-            <Alert className="mt-4" color="failure">
+            <Alert className="mt-5" color="failure">
               {errorMessage}
             </Alert>
           )}
