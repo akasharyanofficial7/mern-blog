@@ -20,10 +20,11 @@ const Header = () => {
         to="/"
         className="self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white"
       >
-        <span className="px-2 py-1 bg-gradient-to-r from-teal-500 via-indigo-500 to-pink-500 rounded-lg text-white">
-          Sahand's
+        <span className="px-2 py-1 flex items-center">
+          <span className="font-serif text-slate-400 font-semibold">Mind</span>
+          <span className="font-serif text-orange-500">&</span>
+          <span className="font-serif text-slate-400">Muse</span>
         </span>
-        Blog
       </Link>
       <form>
         <TextInput
@@ -47,7 +48,7 @@ const Header = () => {
           pill
           onClick={() => dispatch(toggleTheme())}
         >
-          {theme === "light" ? <FaSun /> : <FaMoon />}
+          {theme === "light" ? <FaMoon /> : <FaSun />}
         </Button>
 
         {currentUser && (
