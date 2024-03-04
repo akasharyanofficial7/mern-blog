@@ -62,7 +62,17 @@ export const deleteUser = async (req, res, next) => {
   try {
     await User.findByIdAndDelete(req.params.userId);
 
-    res.status(200).join("your accounted is deleted");
+    res.status(200).json("Your account has been deleted successfully");
+  } catch (error) {
+    next(error);
+  }
+};
+export const signout = async (req, res, next) => {
+  try {
+    res
+      .clearCookie("access_token")
+      .status(200)
+      .json("Your account has been signout successfully");
   } catch (error) {
     next(error);
   }
