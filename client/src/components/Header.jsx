@@ -87,8 +87,8 @@ const Header = () => {
               <Dropdown.Item>profile</Dropdown.Item>
             </Link>
             <Dropdown.Divider />
-            <Dropdown.Item onClick={handleSignOut} icon={HiLogout}>
-              Sign out
+            <Dropdown.Item onClick={handleSignOut}>
+              <HiLogout /> Sign out
             </Dropdown.Item>
           </Dropdown>
         )}

@@ -117,7 +117,7 @@ const DashProfile = () => {
         setUpdateUserError(data.message);
       } else {
         dispatch(updateSuccess(data));
-        setUpdateUserSuccess("User's profile updated successfully");
+        setUpdateUserSuccess(data);
       }
     } catch (error) {
       dispatch(updateFailure(error.message));
@@ -225,8 +225,8 @@ const DashProfile = () => {
 
         <TextInput
           type="password"
-          id="newPassword"
-          placeholder="new password"
+          id="password"
+          placeholder="password"
           onChange={handleChange}
         />
         <Button
@@ -260,12 +260,12 @@ const DashProfile = () => {
       </div>
       {updateUserSuccess && (
         <Alert color="success" className="mt-5">
-          {updateUserSuccess}
+          {updateUserSuccess.message}
         </Alert>
       )}
       {updateUserError && (
         <Alert color="failure" className="mt-5">
-          {updateUserError}
+          {updateUserError.message}
         </Alert>
       )}
 

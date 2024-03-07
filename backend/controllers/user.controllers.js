@@ -17,7 +17,7 @@ export const updateUser = async (req, res, next) => {
     req.body.password = bcryptjs.hashSync(req.body.password, 10);
   }
   if (req.body.username) {
-    if (req.body.username.length < 7 || req.body.username.length > 20) {
+    if (req.body.username.length < 6 || req.body.username.length > 20) {
       return next(
         errorHandler(400, "Username must be between 7 and 20 characters")
       );
@@ -67,12 +67,13 @@ export const deleteUser = async (req, res, next) => {
     next(error);
   }
 };
+
 export const signout = async (req, res, next) => {
   try {
     res
       .clearCookie("access_token")
       .status(200)
-      .json("Your account has been signout successfully");
+      .json("Your account has been signed out successfully");
   } catch (error) {
     next(error);
   }
