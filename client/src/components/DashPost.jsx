@@ -1,11 +1,11 @@
-import React from "react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom"; // Import Link from react-router-dom for navigation
+import { Link } from "react-router-dom";
 
 const DashPost = () => {
   const { currentUser } = useSelector((state) => state.user);
   const [userPosts, setUserPosts] = useState([]);
+  const [showMore, setShowMore] = useState(true);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -14,15 +14,42 @@ const DashPost = () => {
         if (res.ok) {
           const data = await res.json();
           setUserPosts(data.posts);
+          if (data.posts.length < 9) {
+            setShowMore(false);
+          }
         }
       } catch (error) {
         console.log(error.message);
       }
     };
+
     if (currentUser.isAdmin) {
       fetchPosts();
     }
-  }, [currentUser._id]);
+  }, [currentUser._id, currentUser.isAdmin]);
+
+  const handleShowMore = async () => {
+    const startIndex = userPosts.length;
+    try {
+      const res = await fetch(
+        `/api/post/getposts?userId=${currentUser._id}&startIndex=${startIndex}`
+      );
+      const data = await res.json();
+      if (res.ok) {
+        setUserPosts((prevPosts) => [...prevPosts, ...data.posts]);
+        if (data.posts.length < 7) {
+          setShowMore(false);
+        }
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const handleShowLess = () => {
+    setUserPosts(userPosts.slice(0, 7));
+    setShowMore(true);
+  };
 
   return (
     <div className="container mx-auto p-6">
@@ -45,15 +72,15 @@ const DashPost = () => {
                   key={post._id}
                   className="bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600"
                 >
-                  <td className="px-4 py-2 sm:py-3">
+                  <td className="px-8 py-2 sm:py-3">
                     {new Date(post.updatedAt).toLocaleDateString()}
                   </td>
-                  <td className="px-4 py-2 sm:py-3">
+                  <td className="px-4 py-2 sm:py-3 h-8">
                     <Link to={`/post/${post.slug}`}>
                       <img
                         src={post.image}
                         alt={post.title}
-                        className="w-20 h-10 object-cover bg-gray-500"
+                        className="w-20  h-8 object-cover bg-gray-500"
                       />
                     </Link>
                   </td>
@@ -83,6 +110,21 @@ const DashPost = () => {
               ))}
             </tbody>
           </table>
+          {showMore ? (
+            <button
+              onClick={handleShowMore}
+              className="w-full text-teal-500 self-center text-sm py-7"
+            >
+              Show more
+            </button>
+          ) : (
+            <button
+              onClick={handleShowLess}
+              className="w-full text-teal-500 self-center text-sm py-7"
+            >
+              Show less
+            </button>
+          )}
         </div>
       ) : (
         <p className="text-center">You have no posts yet!</p>
