@@ -9,6 +9,7 @@ export default defineConfig({
         secure: false,
       },
     },
+    logLevel: "debug",
   },
   plugins: [react()],
 });

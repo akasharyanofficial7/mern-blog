@@ -12,6 +12,7 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.1",
     "@remix-run/react": "^2.7.2",
+    "caniuse-lite": "^1.0.30001643",
     "firebase": "^10.8.0",
     "flowbite-react": "^0.7.2",
     "react": "^18.2.0",
