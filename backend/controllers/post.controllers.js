@@ -27,6 +27,24 @@ export const create = async (req, res, next) => {
   }
 };
 
+// export const getpostswithId = () => {
+//   console.log("response stinrg");
+//   res.json({
+//     users: [
+//       {
+//         userId: "fjldsfjlds flsdjfldsjfljsd",
+//         content: "lfkjsdlfk slfjsd lkf jlsdfj s",
+//         title: "demo",
+
+//         image:
+//           "https://opt inmonster.com/wp-content/uploads/2015/04/typesofblogposts.png",
+//         category: "uncategorized",
+//         slug: "abcdefghi",
+//       },
+//     ],
+//   });
+// };
+
 export const getposts = async (req, res, next) => {
   try {
     const startIndex = parseInt(req.query.startIndex) || 0;
