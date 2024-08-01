@@ -80,46 +80,39 @@ export const signout = async (req, res, next) => {
 };
 
 export const getUsers = async (req, res, next) => {
-  if (!res.user.isAdmin) {
-    return next(errorHandler(403, "You are not allowed to see all users"));
-  }
+  // if (!req.user.isAdmin) {
+  //   return next(errorHandler(403, "You are not allowed to see all users"));
+  // }
 
   try {
     const startIndex = parseInt(req.query.startIndex) || 0;
     const limit = parseInt(req.query.limit) || 9;
     const sortDirection = req.query.sort === "asc" ? 1 : -1;
 
-    // Fetching users with pagination and sorting
     const users = await User.find()
       .sort({ createdAt: sortDirection })
       .skip(startIndex)
       .limit(limit);
 
-    // Removing password field from users
-    const userWithOutPassword = users.map((user) => {
-      const { password, ...rest } = user.toObject(); // Using toObject to get the plain JavaScript object
+    const usersWithoutPassword = users.map((user) => {
+      const { password, ...rest } = user._doc;
       return rest;
     });
 
-    // Counting total users
     const totalUsers = await User.countDocuments();
-
-    // Calculating the date one month ago
     const now = new Date();
+
     const oneMonthAgo = new Date(
       now.getFullYear(),
       now.getMonth() - 1,
       now.getDate()
     );
-
-    // Counting users created in the last month
     const lastMonthUsers = await User.countDocuments({
       createdAt: { $gte: oneMonthAgo },
     });
 
-    // Sending response with users and counts
     res.status(200).json({
-      users: userWithOutPassword,
+      users: usersWithoutPassword,
       totalUsers,
       lastMonthUsers,
     });
