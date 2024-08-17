@@ -7,45 +7,43 @@ import {
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
-import { app } from "../Firebase";
 import { useEffect, useState } from "react";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { useNavigate, useParams } from "react-router-dom";
-
 import { useSelector } from "react-redux";
+
 export default function UpdatePost() {
-  const { currentUser } = useSelector((state) => state.user);
   const [file, setFile] = useState(null);
   const [imageUploadProgress, setImageUploadProgress] = useState(null);
   const [imageUploadError, setImageUploadError] = useState(null);
   const [formData, setFormData] = useState({});
   const [publishError, setPublishError] = useState(null);
-  const navigate = useNavigate();
-
   const { postId } = useParams();
 
+  const navigate = useNavigate();
+  const { currentUser } = useSelector((state) => state.user);
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
+    try {
+      const fetchPost = async () => {
         const res = await fetch(`/api/post/getposts?postId=${postId}`);
         const data = await res.json();
-
         if (!res.ok) {
+          console.log(data.message);
           setPublishError(data.message);
           return;
         }
-
         if (res.ok) {
           setPublishError(null);
           setFormData(data.posts[0]);
         }
-      } catch (error) {
-        console.log(error.message);
-      }
-    };
+      };
 
-    fetchData();
+      fetchPost();
+    } catch (error) {
+      console.log(error.message);
+    }
   }, [postId]);
 
   const handleUpdloadImage = async () => {
@@ -84,7 +82,6 @@ export default function UpdatePost() {
       console.log(error);
     }
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -112,10 +109,9 @@ export default function UpdatePost() {
       setPublishError("Something went wrong");
     }
   };
-
   return (
     <div className="p-3 max-w-3xl mx-auto min-h-screen">
-      <h1 className="text-center text-3xl my-7 font-semibold">Update Post</h1>
+      <h1 className="text-center text-3xl my-7 font-semibold">Update post</h1>
       <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
         <div className="flex flex-col gap-4 sm:flex-row justify-between">
           <TextInput
@@ -127,7 +123,7 @@ export default function UpdatePost() {
             onChange={(e) =>
               setFormData({ ...formData, title: e.target.value })
             }
-            value={formData.title || ""}
+            value={formData.title}
           />
           <Select
             onChange={(e) =>
@@ -141,7 +137,7 @@ export default function UpdatePost() {
             <option value="nextjs">Next.js</option>
           </Select>
         </div>
-        <div className="flex gap-4 items-center justify-between m-8 border-4 border-teal-500 border-dotted p-3">
+        <div className="flex gap-4 items-center justify-between border-4 border-teal-500 border-dotted p-3">
           <FileInput
             type="file"
             accept="image/*"
@@ -177,16 +173,16 @@ export default function UpdatePost() {
         )}
         <ReactQuill
           theme="snow"
+          value={formData.content}
           placeholder="Write something..."
           className="h-72 mb-12"
           required
           onChange={(value) => {
             setFormData({ ...formData, content: value });
           }}
-          value={formData.content || ""}
         />
         <Button type="submit" gradientDuoTone="purpleToPink">
-          Update
+          Update post
         </Button>
         {publishError && (
           <Alert className="mt-5" color="failure">

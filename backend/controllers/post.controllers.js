@@ -1,5 +1,5 @@
-import { errorHandler } from "../utils/error.js";
 import Post from "../models/post.model.js";
+import { errorHandler } from "../utils/error.js";
 
 export const create = async (req, res, next) => {
   if (!req.user.isAdmin) {
@@ -18,7 +18,6 @@ export const create = async (req, res, next) => {
     slug,
     userId: req.user.id,
   });
-
   try {
     const savedPost = await newPost.save();
     res.status(201).json(savedPost);
@@ -26,24 +25,6 @@ export const create = async (req, res, next) => {
     next(error);
   }
 };
-
-// export const getpostswithId = () => {
-//   console.log("response stinrg");
-//   res.json({
-//     users: [
-//       {
-//         userId: "fjldsfjlds flsdjfldsjfljsd",
-//         content: "lfkjsdlfk slfjsd lkf jlsdfj s",
-//         title: "demo",
-
-//         image:
-//           "https://opt inmonster.com/wp-content/uploads/2015/04/typesofblogposts.png",
-//         category: "uncategorized",
-//         slug: "abcdefghi",
-//       },
-//     ],
-//   });
-// };
 
 export const getposts = async (req, res, next) => {
   try {
@@ -53,7 +34,7 @@ export const getposts = async (req, res, next) => {
     const posts = await Post.find({
       ...(req.query.userId && { userId: req.query.userId }),
       ...(req.query.category && { category: req.query.category }),
-      ...(req.query.slug && { category: req.query.slug }),
+      ...(req.query.slug && { slug: req.query.slug }),
       ...(req.query.postId && { _id: req.query.postId }),
       ...(req.query.searchTerm && {
         $or: [
@@ -91,12 +72,12 @@ export const getposts = async (req, res, next) => {
 };
 
 export const deletepost = async (req, res, next) => {
-  if (!req.user.isAdmin && req.user.id !== req.params.userId) {
-    return next(errorHandler(403, "You are not allowed to delete this user"));
+  if (!req.user.isAdmin || req.user.id !== req.params.userId) {
+    return next(errorHandler(403, "You are not allowed to delete this post"));
   }
   try {
     await Post.findByIdAndDelete(req.params.postId);
-    res.status(200).json("the post has been deleted");
+    res.status(200).json("The post has been deleted");
   } catch (error) {
     next(error);
   }
