@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { Button, Spinner } from "flowbite-react";
+import Comments from "../components/Comments";
 
 const PostPage = () => {
   const { postSlug } = useParams();
@@ -83,7 +84,10 @@ const PostPage = () => {
           dangerouslySetInnerHTML={{ __html: post && post.content }}
         ></div>
       </main>
-      ;
+
+      <div>
+        <Comments postId={post._id} />
+      </div>
     </>
   );
 };
