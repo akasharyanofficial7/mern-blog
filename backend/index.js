@@ -6,7 +6,6 @@ import authRoutes from "./routes/auth.routes.js";
 import cookieParser from "cookie-parser";
 import postRoutes from "./routes/post.routes.js";
 import commentRoutes from "./routes/comment.routes.js";
-
 dotenv.config();
 
 const PORT = process.env.PORT || 3000;
