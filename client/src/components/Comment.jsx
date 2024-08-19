@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { FaThumbsUp } from "react-icons/fa";
 import moment from "moment";
-
-const Comment = ({ comment }) => {
+import { useSelector } from "react-redux";
+const Comment = ({ comment, onLike }) => {
   const [user, setUser] = useState({});
   const [error, setError] = useState(null);
+
+  const { currentUser } = useSelector((state) => state.user);
 
   useEffect(() => {
     const getUser = async () => {
@@ -50,6 +53,28 @@ const Comment = ({ comment }) => {
           </button>
         </div>
       </div>
+      <div className="relative">
+        <button
+          className={`  p-2 text-gray-600 dark:text-white pl-12 mt-2  flex items-center gap-3 ${
+            currentUser &&
+            comment.likes.includes(currentUser._id) &&
+            "!text-blue-800 dark:text-blue-800"
+          }`}
+          type="button"
+          onClick={() => onLike(comment._id)}
+        >
+          <FaThumbsUp className="" />
+          <div>
+            {comment.numberOfLikes > 0 && (
+              <p className="text-gray-400">
+                {comment.numberOfLikes}
+                {comment.numberOfLikes === 1 ? " like" : " likes"}
+              </p>
+            )}
+          </div>
+        </button>
+      </div>
+
       <hr className=" my-4" />
     </section>
   );

@@ -1,7 +1,7 @@
 import { Alert, Button, Textarea } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Comment from "./Comment";
 
 export default function CommentSection({ postId }) {
@@ -10,8 +10,12 @@ export default function CommentSection({ postId }) {
   const [comments, setComments] = useState([]);
   const [commentError, setCommentError] = useState(null);
 
+  const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validation
     if (comment.trim().length === 0) {
       setCommentError("Comment cannot be empty.");
       return;
@@ -20,6 +24,7 @@ export default function CommentSection({ postId }) {
       setCommentError("Comment exceeds 200 characters.");
       return;
     }
+
     try {
       const res = await fetch("/api/comment/create", {
         method: "POST",
@@ -42,7 +47,7 @@ export default function CommentSection({ postId }) {
         setCommentError(data.message || "Failed to submit comment.");
       }
     } catch (error) {
-      setCommentError(error.message);
+      setCommentError("An error occurred: " + error.message);
     }
   };
 
@@ -57,12 +62,47 @@ export default function CommentSection({ postId }) {
           console.error("Failed to fetch comments");
         }
       } catch (error) {
-        console.error(error);
+        console.error("An error occurred: ", error);
       }
     };
 
     getComments();
   }, [postId]);
+
+  const handleLike = async (commentId) => {
+    if (!currentUser) {
+      navigate("/sign-in");
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/comment/likeComment/${commentId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",  
+        },
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setComments((prevComments) =>
+          prevComments.map((comment) =>
+            comment._id === commentId
+              ? {
+                  ...comment,
+                  likes: data.likes,
+                  numberOfLikes: data.likes.length,
+                }
+              : comment
+          )
+        );
+      } else {
+        console.error("Failed to like the comment.");
+      }
+    } catch (error) {
+      console.error("An error occurred: ", error);
+    }
+  };
 
   return (
     <div className="max-w-2xl mx-auto w-full p-4">
@@ -127,7 +167,7 @@ export default function CommentSection({ postId }) {
             </div>
           </div>
           {comments.map((comment) => (
-            <Comment key={comment._id} comment={comment} />
+            <Comment key={comment._id} comment={comment} onLike={handleLike} />
           ))}
         </>
       )}
