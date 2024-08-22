@@ -12,6 +12,7 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.1",
     "@remix-run/react": "^2.7.2",
+    "@tailwindcss/line-clamp": "^0.4.4",
     "axios": "^1.7.2",
     "caniuse-lite": "^1.0.30001643",
     "date-fns": "^3.6.0",
