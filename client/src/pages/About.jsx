@@ -1,134 +1,104 @@
 import React from "react";
+import { FaHeart, FaCode, FaLaptopCode } from "react-icons/fa";
 
 const About = () => {
   return (
-    <div>
-      <form class="max-w-md mx-auto">
-        <div class="relative z-0 w-full mb-5 group">
-          <input
-            type="email"
-            name="floating_email"
-            id="floating_email"
-            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-            placeholder=" "
-            required
-          />
-          <label
-            for="floating_email"
-            class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-          >
-            Email address
-          </label>
-        </div>
-        <div class="relative z-0 w-full mb-5 group">
-          <input
-            type="password"
-            name="floating_password"
-            id="floating_password"
-            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-            placeholder=" "
-            required
-          />
-          <label
-            for="floating_password"
-            class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-          >
-            Password
-          </label>
-        </div>
-        <div class="relative z-0 w-full mb-5 group">
-          <input
-            type="password"
-            name="repeat_password"
-            id="floating_repeat_password"
-            class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-            placeholder=" "
-            required
-          />
-          <label
-            for="floating_repeat_password"
-            class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-          >
-            Confirm password
-          </label>
-        </div>
-        <div class="grid md:grid-cols-2 md:gap-6">
-          <div class="relative z-0 w-full mb-5 group">
-            <input
-              type="text"
-              name="floating_first_name"
-              id="floating_first_name"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-              placeholder=" "
-              required
-            />
-            <label
-              for="floating_first_name"
-              class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-            >
-              First name
-            </label>
-          </div>
-          <div class="relative z-0 w-full mb-5 group">
-            <input
-              type="text"
-              name="floating_last_name"
-              id="floating_last_name"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-              placeholder=" "
-              required
-            />
-            <label
-              for="floating_last_name"
-              class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-            >
-              Last name
-            </label>
+    <>
+      {/* First About Us Section - Image on Left */}
+      <section className="relative py-16 bg-gray-100 dark:bg-gray-900">
+        <div className="max-w-6xl mx-auto px-6">
+          {/* Section Heading */}
+          <h2 className="text-4xl font-bold text-center text-gray-800 dark:text-white mb-12 animate__animated animate__fadeInDown">
+            About Us
+          </h2>
+
+          {/* About Content */}
+          <div className="flex flex-col md:flex-row items-center gap-12">
+            {/* Left Side - Image */}
+            <div className="w-full md:w-1/2 order-2 md:order-1">
+              <img
+                src="https://img.freepik.com/free-photo/technology-communication-icons-symbols-concept_53876-120314.jpg?ga=GA1.1.1139437995.1723613942&semt=ais_hybrid"
+                alt="About Us"
+                className="rounded-lg shadow-lg transform transition-transform duration-700 hover:scale-105 animate__animated animate__fadeInLeft"
+              />
+            </div>
+
+            {/* Right Side - Text */}
+            <div className="w-full md:w-1/2 order-1 md:order-2">
+              <p className="text-lg text-gray-700 dark:text-gray-300 mb-6 animate__animated animate__fadeInRight">
+                Welcome to our blog! We are passionate about coding and
+                technology. Our mission is to share valuable insights,
+                tutorials, and stories to help developers of all levels enhance
+                their skills and stay updated with the latest trends.
+              </p>
+              <p className="text-lg text-gray-700 dark:text-gray-300 mb-6 animate__animated animate__fadeInRight animate__delay-1s">
+                Our blog covers a wide range of topics, including JavaScript,
+                React, Node.js, CSS, and much more. Whether you're a beginner or
+                an experienced developer, you'll find something here that sparks
+                your interest.
+              </p>
+              <p className="text-lg text-gray-700 dark:text-gray-300 animate__animated animate__fadeInRight animate__delay-2s">
+                Join us on this journey of learning and growth. Let's code,
+                create, and innovate together!
+              </p>
+
+              {/* Icons */}
+              <div className="flex mt-8 gap-6">
+                <FaHeart className="text-teal-600 text-4xl animate__animated animate__fadeInUp" />
+                <FaCode className="text-teal-600 text-4xl animate__animated animate__fadeInUp animate__delay-1s" />
+                <FaLaptopCode className="text-teal-600 text-4xl animate__animated animate__fadeInUp animate__delay-2s" />
+              </div>
+            </div>
           </div>
         </div>
-        <div class="grid md:grid-cols-2 md:gap-6">
-          <div class="relative z-0 w-full mb-5 group">
-            <input
-              type="tel"
-              pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
-              name="floating_phone"
-              id="floating_phone"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-              placeholder=" "
-              required
-            />
-            <label
-              for="floating_phone"
-              class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-            >
-              Phone number (123-456-7890)
-            </label>
-          </div>
-          <div class="relative z-0 w-full mb-5 group">
-            <input
-              type="text"
-              name="floating_company"
-              id="floating_company"
-              class="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-              placeholder=" "
-              required
-            />
-            <label
-              for="floating_company"
-              class="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-            >
-              Company (Ex. Google)
-            </label>
+      </section>
+
+      {/* Second About Us Section - Image on Right */}
+      <section className="relative py-16 bg-gray-100 dark:bg-gray-900">
+        <div className="max-w-6xl mx-auto px-6">
+          {/* Section Heading */}
+
+          {/* About Content */}
+          <div className="flex flex-col md:flex-row items-center gap-12">
+            {/* Right Side - Text */}
+            <div className="w-full md:w-1/2 order-2 md:order-1">
+              <p className="text-lg text-gray-700 dark:text-gray-300 mb-6 animate__animated animate__fadeInRight">
+                Welcome to our blog! We are passionate about coding and
+                technology. Our mission is to share valuable insights,
+                tutorials, and stories to help developers of all levels enhance
+                their skills and stay updated with the latest trends.
+              </p>
+              <p className="text-lg text-gray-700 dark:text-gray-300 mb-6 animate__animated animate__fadeInRight animate__delay-1s">
+                Our blog covers a wide range of topics, including JavaScript,
+                React, Node.js, CSS, and much more. Whether you're a beginner or
+                an experienced developer, you'll find something here that sparks
+                your interest.
+              </p>
+              <p className="text-lg text-gray-700 dark:text-gray-300 animate__animated animate__fadeInRight animate__delay-2s">
+                Join us on this journey of learning and growth. Let's code,
+                create, and innovate together!
+              </p>
+
+              {/* Icons */}
+              <div className="flex mt-8 gap-6">
+                <FaHeart className="text-teal-600 text-4xl animate__animated animate__fadeInUp" />
+                <FaCode className="text-teal-600 text-4xl animate__animated animate__fadeInUp animate__delay-1s" />
+                <FaLaptopCode className="text-teal-600 text-4xl animate__animated animate__fadeInUp animate__delay-2s" />
+              </div>
+            </div>
+
+            {/* Left Side - Image */}
+            <div className="w-full md:w-1/2 order-1 md:order-2">
+              <img
+                src="https://img.freepik.com/premium-photo/word-blog-is-written-wooden-cubes-blocks-are-placed-old-wooden-board-illuminated-by-sun-background-is-brightly-blooming-shrub_384017-3037.jpg?ga=GA1.1.1139437995.1723613942&semt=ais_hybrid"
+                alt="About Us"
+                className="rounded-lg shadow-lg transform transition-transform duration-700 hover:scale-105 animate__animated animate__fadeInRight"
+              />
+            </div>
           </div>
         </div>
-        <button
-          type="submit"
-          class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-        >
-          Submit
-        </button>
-      </form>
-    </div>
+      </section>
+    </>
   );
 };
 
