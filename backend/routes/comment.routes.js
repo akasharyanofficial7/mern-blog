@@ -6,14 +6,13 @@ import {
   getPostComments,
   likeComment,
   getcomments,
+  deleteComment,
 } from "../controllers/comment.controllers.js";
 
-// Route for creating a comment
 router.post("/create", verifyToken, createComment);
-
-// Route for fetching comments of a specific post (should be GET)
+router.delete("/deleteComment/:commentId", verifyToken, deleteComment);
 router.get("/getPostComment/:postId", getPostComments);
 router.put("/likeComment/:commentId", verifyToken, likeComment);
-router.get("/getcomments/:postId", getcomments);
+router.get("/getcomments", verifyToken, getcomments);
 
 export default router;
