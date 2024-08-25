@@ -43,7 +43,22 @@ const categoryData = [
 
 const Home = () => {
   const [recentPosts, setRecentPosts] = useState(null);
-  const [error, setError] = useState(false); // Add an error state
+  const [error, setError] = useState(false);
+
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    const fetchAllPosts = async () => {
+      try {
+        const res = await fetch("/api/post/getPosts");
+        const data = await res.json();
+        setPosts(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchAllPosts();
+  }, []);
 
   useEffect(() => {
     const fetchRecentPosts = async () => {
@@ -57,8 +72,20 @@ const Home = () => {
     };
 
     fetchRecentPosts();
-  }, []); // Ensure the dependency array is empty to avoid looping
+  }, []);
 
+  useEffect(() => {
+    const fetchAllPosts = async () => {
+      try {
+        const res = await fetch("/api/post/getPosts");
+        const data = await res.json();
+        setPosts(data);
+      } catch (error) {
+        console.log("error");
+      }
+    };
+    fetchAllPosts();
+  }, []);
   return (
     <div>
       {/* First Section */}
