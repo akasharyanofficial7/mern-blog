@@ -5,8 +5,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": "https://mern-blog-backend-1bum.onrender.com",
-        secure: false,
-      },
+      secure: false,
     },
     logLevel: "debug",
   },
