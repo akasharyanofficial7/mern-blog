@@ -2,7 +2,10 @@ import React, { useState, useRef, useEffect } from "react";
 import { Alert, Button, TextInput, Modal } from "flowbite-react";
 import { useDispatch, useSelector } from "react-redux";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
+import { FiCamera, FiSettings } from "react-icons/fi"; // Import settings icon
 import { CircularProgressbar } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
+
 import {
   updateStart,
   updateFailure,
@@ -14,14 +17,12 @@ import {
 } from "../redux/user/userSlice";
 
 import { Link } from "react-router-dom";
-
 import {
   getDownloadURL,
   getStorage,
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
-
 import { app } from "../Firebase";
 
 const DashProfile = () => {
@@ -34,6 +35,7 @@ const DashProfile = () => {
   const [updateUserSuccess, setUpdateUserSuccess] = useState(null);
   const [updateUserError, setUpdateUserError] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [settingsPopup, setSettingsPopup] = useState(false); // New state for settings popup
   const [formData, setFormData] = useState({});
   const filePickerRef = useRef();
   const dispatch = useDispatch();
@@ -64,7 +66,6 @@ const DashProfile = () => {
       (snapshot) => {
         const progress =
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-
         setImageFileUploadProgress(progress.toFixed(0));
       },
       (error) => {
@@ -160,18 +161,13 @@ const DashProfile = () => {
   };
 
   return (
-    <div className="max-w-lg mx-auto p-3 w-full">
-      <h1 className="my-7 text-center font-semibold text-3xl">Profile</h1>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageChange}
-          ref={filePickerRef}
-          hidden
-        />
+    <div className="max-w-lg mx-auto p-5 w-full bg-white dark:bg-gray-900 rounded-lg shadow-md">
+      <h1 className="text-center text-4xl font-bold my-5 text-gray-800 dark:text-gray-200">
+        Profile
+      </h1>
+      <div className="flex items-center justify-center relative">
         <div
-          className="relative w-32 h-32 self-center cursor-pointer shadow-md overflow-hidden rounded-full"
+          className="relative w-32 h-32 mx-auto cursor-pointer shadow-md overflow-hidden rounded-full border-2 border-gradient-to-r from-purple-400 to-pink-400"
           onClick={() => filePickerRef.current.click()}
         >
           {imageFileUploadProgress && (
@@ -198,107 +194,129 @@ const DashProfile = () => {
           <img
             src={imageFileUrl || currentUser.profilePicture}
             alt="user"
-            className={`rounded-full w-full h-full object-cover border-8 border-[lightgray] ${
-              imageFileUploadProgress &&
-              imageFileUploadProgress < 100 &&
-              "opacity-60"
+            className={`rounded-full w-full h-full object-cover border-8 border-gray-300 ${
+              imageFileUploadProgress && imageFileUploadProgress < 100
+                ? "opacity-50"
+                : ""
             }`}
           />
+          <div className="absolute inset-0 flex justify-center items-center bg-black bg-opacity-40 opacity-0 hover:opacity-100 transition-opacity">
+            <FiCamera className="text-white text-2xl" />
+          </div>
         </div>
-        {imageFileUploadError && (
-          <Alert color="failure">{imageFileUploadError}</Alert>
-        )}
+        <FiSettings
+          className="absolute right-0 top-0 w-8 h-8 text-gray-600 cursor-pointer"
+          onClick={() => setSettingsPopup(true)}
+        />
+      </div>
+
+      {settingsPopup && (
+        <Modal show={settingsPopup} onClose={() => setSettingsPopup(false)}>
+          <Modal.Header>Settings</Modal.Header>
+          <Modal.Body>
+            <p>What would you like to do?</p>
+            <div className="flex flex-col gap-2 mt-4">
+              <Button onClick={() => setSettingsPopup(false)}>
+                Update Profile
+              </Button>
+              <Button
+                onClick={() => {
+                  handleDeleteUser();
+                  setSettingsPopup(false);
+                }}
+              >
+                Delete Account
+              </Button>
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button color="gray" onClick={() => setSettingsPopup(false)}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      )}
+
+      <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleImageChange}
+          ref={filePickerRef}
+          hidden
+        />
         <TextInput
           type="text"
           id="username"
-          placeholder="username"
+          placeholder="Username"
           defaultValue={currentUser.username}
           onChange={handleChange}
+          className="rounded-lg border-2 border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-400 transition"
         />
         <TextInput
           type="email"
           id="email"
-          placeholder="email"
+          placeholder="Email"
           defaultValue={currentUser.email}
           onChange={handleChange}
+          className="rounded-lg border-2 border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-400 transition"
         />
-
         <TextInput
           type="password"
           id="password"
-          placeholder="password"
+          placeholder="Password"
           onChange={handleChange}
+          className="rounded-lg border-2 border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-400 transition"
         />
         <Button
           type="submit"
           gradientDuoTone="purpleToBlue"
-          outline
-          disabled={load || imageFileUploading}
+          className="w-full rounded-full bg-gradient-to-r from-purple-500 to-blue-500 text-white"
         >
-          {load ? "Loading..." : "Update"}
+          Update
         </Button>
-
-        {currentUser.isAdmin && (
-          <Link to={"/create-post"}>
-            <Button
-              type="button"
-              gradientDuoTone="purpleToPink"
-              className="w-full"
-            >
-              Create a post
-            </Button>
-          </Link>
+        {updateUserError && (
+          <Alert
+            color="failure"
+            className="my-4"
+            onDismiss={() => setUpdateUserError(null)}
+          >
+            <span className="flex items-center">
+              <HiOutlineExclamationCircle className="mr-2" />
+              {updateUserError}
+            </span>
+          </Alert>
+        )}
+        {updateUserSuccess && (
+          <Alert
+            color="success"
+            className="my-4"
+            onDismiss={() => setUpdateUserSuccess(null)}
+          >
+            <span className="flex items-center">
+              <HiOutlineExclamationCircle className="mr-2" />
+              Profile updated successfully!
+            </span>
+          </Alert>
         )}
       </form>
-      <div className="text-red-500 flex justify-between mt-5">
-        <span onClick={() => setShowModal(true)} className="cursor-pointer">
-          Delete Account
-        </span>
-        <span onClick={handleSignOut} className="cursor-pointer">
-          Sign Out
-        </span>
-      </div>
-      {updateUserSuccess && (
-        <Alert color="success" className="mt-5">
-          {updateUserSuccess.message}
-        </Alert>
-      )}
-      {updateUserError && (
-        <Alert color="failure" className="mt-5">
-          {updateUserError.message}
-        </Alert>
-      )}
 
-      {error && (
-        <Alert color="failure" className="mt-5">
-          {error}
-        </Alert>
+      {showModal && (
+        <Modal show={showModal} onClose={() => setShowModal(false)}>
+          <Modal.Header>Confirm Account Deletion</Modal.Header>
+          <Modal.Body>
+            <p>Are you sure you want to delete your account?</p>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button color="gray" onClick={() => setShowModal(false)}>
+              Cancel
+            </Button>
+            <Button color="failure" onClick={handleDeleteUser}>
+              Delete
+            </Button>
+          </Modal.Footer>
+        </Modal>
       )}
-
-      <Modal
-        show={showModal}
-        size="md"
-        onClose={() => setShowModal(false)}
-        popup
-      >
-        <Modal.Header />
-        <Modal.Body>
-          <div className="text-center">
-            <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
-            <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-              Are you sure you want to delete this product?
-            </h3>
-            <div className="flex justify-center gap-4">
-              <Button color="failure" onClick={handleDeleteUser}>
-                Yes, I'm sure
-              </Button>
-              <Button color="gray" onClick={() => setShowModal(false)}>
-                No, cancel
-              </Button>
-            </div>
-          </div>
-        </Modal.Body>
-      </Modal>
     </div>
   );
 };
