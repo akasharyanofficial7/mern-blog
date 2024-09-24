@@ -53,11 +53,9 @@ export default function Header() {
       <Link
         to="/"
         className="self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white"
+        style={{ fontFamily: "'Pacifico', cursive" }} // Set custom font style here
       >
-        <span className="px-2 py-1 bg-gradient-to-r from-gray-500 via-gray-500 to-orange-500 rounded-sm text-white">
-          Mind &
-        </span>
-        Muse
+        Mind & Muse
       </Link>
       <form onSubmit={handleSubmit}>
         <TextInput
@@ -110,17 +108,7 @@ export default function Header() {
         )}
         <Navbar.Toggle />
       </div>
-      <Navbar.Collapse>
-        <Navbar.Link active={path === "/"} as={"div"}>
-          <Link to="/">Home</Link>
-        </Navbar.Link>
-        <Navbar.Link active={path === "/about"} as={"div"}>
-          <Link to="/about">About</Link>
-        </Navbar.Link>
-        <Navbar.Link active={path === "/projects"} as={"div"}>
-          <Link to="/projects">Projects</Link>
-        </Navbar.Link>
-      </Navbar.Collapse>
+      <Navbar.Collapse>{/* Add Navbar Links here */}</Navbar.Collapse>
     </Navbar>
   );
 }

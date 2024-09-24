@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Alert, Button, TextInput, Modal } from "flowbite-react";
 import { useDispatch, useSelector } from "react-redux";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
-import { FiCamera, FiSettings } from "react-icons/fi"; // Import settings icon
+import { FiCamera, FiSettings } from "react-icons/fi";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 
@@ -35,8 +35,14 @@ const DashProfile = () => {
   const [updateUserSuccess, setUpdateUserSuccess] = useState(null);
   const [updateUserError, setUpdateUserError] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [settingsPopup, setSettingsPopup] = useState(false); // New state for settings popup
-  const [formData, setFormData] = useState({});
+  const [settingsPopup, setSettingsPopup] = useState(false);
+  const [formData, setFormData] = useState({
+    username: currentUser.username,
+    email: currentUser.email,
+    password: "",
+  });
+  const [isEditing, setIsEditing] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false); // New state for delete confirmation
   const filePickerRef = useRef();
   const dispatch = useDispatch();
 
@@ -95,7 +101,7 @@ const DashProfile = () => {
     e.preventDefault();
     setUpdateUserError(null);
     setUpdateUserSuccess(null);
-    if (Object.keys(formData).length === 0) {
+    if (Object.keys(formData).length === 0 && !formData.password) {
       setUpdateUserError("No changes made");
       return;
     }
@@ -103,6 +109,7 @@ const DashProfile = () => {
       setUpdateUserError("Please wait for image to upload");
       return;
     }
+
     try {
       dispatch(updateStart());
       const res = await fetch(`/api/user/update/${currentUser._id}`, {
@@ -119,6 +126,7 @@ const DashProfile = () => {
       } else {
         dispatch(updateSuccess(data));
         setUpdateUserSuccess(data);
+        setIsEditing(false);
       }
     } catch (error) {
       dispatch(updateFailure(error.message));
@@ -126,10 +134,10 @@ const DashProfile = () => {
     }
   };
 
-  const handleDeleteUser = async () => {
-    setShowModal(false);
+  const handleDeleteAccount = async () => {
+    setIsDeleting(false);
+    dispatch(deleteUserStart());
     try {
-      dispatch(deleteUserStart());
       const res = await fetch(`/api/user/delete/${currentUser._id}`, {
         method: "DELETE",
       });
@@ -137,26 +145,11 @@ const DashProfile = () => {
       if (!res.ok) {
         dispatch(deleteUserFailure(data.message));
       } else {
-        dispatch(deleteUserSuccess(data));
+        dispatch(deleteUserSuccess());
+        // Optional: Sign the user out or redirect to a different page
       }
     } catch (error) {
       dispatch(deleteUserFailure(error.message));
-    }
-  };
-
-  const handleSignOut = async () => {
-    try {
-      const res = await fetch("/api/user/signout", {
-        method: "POST",
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        console.log(error.message);
-      } else {
-        dispatch(signoutSuccess(data));
-      }
-    } catch (error) {
-      console.log(error.message);
     }
   };
 
@@ -206,113 +199,81 @@ const DashProfile = () => {
         </div>
         <FiSettings
           className="absolute right-0 top-0 w-8 h-8 text-gray-600 cursor-pointer"
-          onClick={() => setSettingsPopup(true)}
+          onClick={() => setIsEditing(true)}
         />
       </div>
 
-      {settingsPopup && (
-        <Modal show={settingsPopup} onClose={() => setSettingsPopup(false)}>
-          <Modal.Header>Settings</Modal.Header>
+      {/* Display User Details */}
+      <div className="text-center mt-4">
+        <h2 className="text-lg font-semibold">{currentUser.username}</h2>
+        <p className="text-gray-600">{currentUser.email}</p>
+      </div>
+
+      {isEditing && (
+        <Modal show={isEditing} onClose={() => setIsEditing(false)}>
+          <Modal.Header>Update Profile</Modal.Header>
           <Modal.Body>
-            <p>What would you like to do?</p>
-            <div className="flex flex-col gap-2 mt-4">
-              <Button onClick={() => setSettingsPopup(false)}>
-                Update Profile
-              </Button>
+            <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+              <TextInput
+                type="text"
+                id="username"
+                value={formData.username}
+                onChange={handleChange}
+                placeholder="Update Username"
+              />
+              <TextInput
+                type="email"
+                id="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Update Email"
+              />
+              <TextInput
+                type="password"
+                id="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Update Password"
+              />
               <Button
-                onClick={() => {
-                  handleDeleteUser();
-                  setSettingsPopup(false);
-                }}
+                type="submit"
+                className="bg-purple-500 hover:bg-purple-600 text-white"
               >
-                Delete Account
+                Save Changes
               </Button>
-            </div>
+            </form>
           </Modal.Body>
           <Modal.Footer>
-            <Button color="gray" onClick={() => setSettingsPopup(false)}>
+            <Button color="gray" onClick={() => setIsEditing(false)}>
               Close
             </Button>
           </Modal.Footer>
         </Modal>
       )}
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageChange}
-          ref={filePickerRef}
-          hidden
-        />
-        <TextInput
-          type="text"
-          id="username"
-          placeholder="Username"
-          defaultValue={currentUser.username}
-          onChange={handleChange}
-          className="rounded-lg border-2 border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-400 transition"
-        />
-        <TextInput
-          type="email"
-          id="email"
-          placeholder="Email"
-          defaultValue={currentUser.email}
-          onChange={handleChange}
-          className="rounded-lg border-2 border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-400 transition"
-        />
-        <TextInput
-          type="password"
-          id="password"
-          placeholder="Password"
-          onChange={handleChange}
-          className="rounded-lg border-2 border-gray-300 focus:border-purple-500 focus:ring-2 focus:ring-purple-400 transition"
-        />
-        <Button
-          type="submit"
-          gradientDuoTone="purpleToBlue"
-          className="w-full rounded-full bg-gradient-to-r from-purple-500 to-blue-500 text-white"
-        >
-          Update
-        </Button>
-        {updateUserError && (
-          <Alert
-            color="failure"
-            className="my-4"
-            onDismiss={() => setUpdateUserError(null)}
-          >
-            <span className="flex items-center">
-              <HiOutlineExclamationCircle className="mr-2" />
-              {updateUserError}
-            </span>
-          </Alert>
-        )}
-        {updateUserSuccess && (
-          <Alert
-            color="success"
-            className="my-4"
-            onDismiss={() => setUpdateUserSuccess(null)}
-          >
-            <span className="flex items-center">
-              <HiOutlineExclamationCircle className="mr-2" />
-              Profile updated successfully!
-            </span>
-          </Alert>
-        )}
-      </form>
+      <Button
+        className="mt-5 w-full bg-red-500 hover:bg-red-600 text-white"
+        onClick={() => setIsDeleting(true)}
+      >
+        Delete Account
+      </Button>
 
-      {showModal && (
-        <Modal show={showModal} onClose={() => setShowModal(false)}>
-          <Modal.Header>Confirm Account Deletion</Modal.Header>
+      {isDeleting && (
+        <Modal show={isDeleting} onClose={() => setIsDeleting(false)}>
+          <Modal.Header>Confirm Delete Account</Modal.Header>
           <Modal.Body>
-            <p>Are you sure you want to delete your account?</p>
+            <Alert color="failure" className="flex items-center">
+              <HiOutlineExclamationCircle className="mr-2" />
+              Are you sure you want to delete your account? This action is
+              irreversible.
+            </Alert>
           </Modal.Body>
           <Modal.Footer>
-            <Button color="gray" onClick={() => setShowModal(false)}>
-              Cancel
+            <Button color="red" onClick={handleDeleteAccount}>
+              Yes, Delete
             </Button>
-            <Button color="failure" onClick={handleDeleteUser}>
-              Delete
+            <Button color="gray" onClick={() => setIsDeleting(false)}>
+              Cancel
             </Button>
           </Modal.Footer>
         </Modal>

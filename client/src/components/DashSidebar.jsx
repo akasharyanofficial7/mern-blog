@@ -9,6 +9,8 @@ import {
   HiChartPie,
 } from "react-icons/hi";
 import { MdAddComment } from "react-icons/md";
+import { FcAbout } from "react-icons/fc";
+import { FaHome } from "react-icons/fa";
 import { useLocation, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { signoutSuccess } from "../redux/user/userSlice";
@@ -99,6 +101,22 @@ const DashSidebar = () => {
                   as="div"
                 >
                   Posts
+                </Sidebar.Item>
+              </Link>
+            )}
+
+            {currentUser && (
+              <Link to="/">
+                <Sidebar.Item active={tab === "/"} icon={FaHome} as="div">
+                  Posts
+                </Sidebar.Item>
+              </Link>
+            )}
+
+            {currentUser && (
+              <Link to="/about">
+                <Sidebar.Item active={tab === "/about"} icon={FcAbout} as="div">
+                  About
                 </Sidebar.Item>
               </Link>
             )}
